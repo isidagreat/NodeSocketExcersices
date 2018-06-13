@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>SurveyIO</title>
+	<link rel="stylesheet" type="text/css" href="bulma-0.7.1/css/bulma.css"
+	 />
+	 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.dev.js"></script>
+
+    <script type="text/javascript">
+    	$(document).ready(function(){
+    		var socket = io('localhost:1337');         	
+         $('button').click(function(){
+         	var color = $(this).val();
+         	socket.emit('color', {msg: color});
+         });
+
+         	socket.on('updated_color', function(data){
+         		var info = data;
+         		console.log(info.msg);
+         		$("body").css("background-color", info.msg.msg);
+         	});
+         	socket.on('greeting', function(data){
+         		var info = data;
+         		console.log(info.msg);
+         		$("body").css("background-color", info.msg);
+         	});         	
+
+         
+         });
+
+
+    </script>
+</head>
+<body>
+	<div >
+		<div class="columns">
+			<div class="column">
+				<button class="button is-primary is-large" value="green">Green</button>
+			</div>
+			<div class="column">
+				<button class="button is-link is-large" value="blue">Blue</button>
+			</div>
+			<div class="column">
+				<button class="button is-danger is-large" value="pink">Pink</button>
+			</div>						
+		</div>
+	</div>
+</body>
+</html>

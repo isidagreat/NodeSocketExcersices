@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>SurveyIO</title>
+	<link rel="stylesheet" type="text/css" href="bulma-0.7.1/css/bulma.css"
+	 />
+	 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.dev.js"></script>
+
+    <script type="text/javascript">
+    	$(document).ready(function(){
+    		var socket = io('localhost:1337');
+    		var form = $('#theform');
+    		var formtwo = $('#myform');
+         	var input = $('#presstwo');
+         	var inputtwo = $('#press');
+         
+
+         form.submit(function(e) {
+            e.preventDefault();
+            socket.emit('posting_form', {msg: input.val()});
+
+    		});
+            formtwo.submit(function(e) {
+            e.preventDefault();
+            socket.emit('posting_form', {msg: inputtwo.val()});
+
+    		});
+
+         	socket.on('updated_message', function(data){
+         		var info = data;
+         		console.log(info);
+         		$(".hero").empty();
+         		$(".hero").append("<p>The NumberHas been Pressed: "+info.msg+"</p>");
+         	});
+
+         
+         });
+
+
+    </script>
+</head>
+<body>
+	<div class="container">
+		<div class="hero">
+			<p>The NumberHas been Pressed <%=count %> </p>
+		</div>
+		<div class="columns">
+			<div class="column">
+				<h1 class="title is-big">Epic Button Game</h1>
+				<form id="myform">
+					<input type="hidden" id="press" value="1">
+					<div class="control">
+						<p>Press the Button to increse the count!!!</p>
+						<button type="submit" class="button is-link">Submit</button>
+					</div>
+				</form>
+					<form id="theform">
+					<input type="hidden" id="presstwo" value="0">
+					<div class="control">
+						<p>Set Count back to Zero</p>
+						<button type="submit" class="button is-danger">Submit</button>
+					</div>
+				</form>
+			</div>
+
+		</div>
+
+	</div>
+</body>
+</html>

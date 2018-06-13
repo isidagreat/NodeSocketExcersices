@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>SurveyIO</title>
+	<link rel="stylesheet" type="text/css" href="bulma-0.7.1/css/bulma.css"
+	 />
+	 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.dev.js"></script>
+
+    <script type="text/javascript">
+    	$(document).ready(function(){
+    		var socket = io('localhost:1337');
+    		var form = $('#myform');
+         	var fname = $('#name');
+         	var location =$("#dojo")
+         	var lang= $("#language")
+         	var msg = $("#message")
+
+         form.submit(function(e) {
+            e.preventDefault();
+            socket.emit('posting_form', [fname.val(),location.val(), lang.val(), msg.val()]);
+    		fname.val('');
+    		location.val('');
+    		lang.val('');
+    		msg.val('');
+
+    		});
+
+         	socket.on('updated_message', function(data){
+         		var info = data;
+         		console.log(info);
+         		$(".hero").empty();
+         		$(".hero").append("<p>You emitted the following information and it has been stored in an array instead of a dictionary: "+info.msg+"</p>");
+         	});
+
+         	socket.on("random_number", function(data){
+         		console.log(data);
+         		$(".hero").append("<p>Your Lucky Number is:"+data.nmbr+"</p");
+         	});
+         
+         });
+
+
+    </script>
+</head>
+<body>
+	<div class="container">
+		<div class="hero">
+
+		</div>
+		<div class="columns">
+			<div class="column">
+				<h1 class="title is-big">Survey Form</h1>
+				<form id="myform">
+					<div class="field">
+						<label class="label">Name</label>
+						<div class="control">
+							<input class="input" type="text" id="name" placeholder="Type name">
+						</div>
+					</div>
+					<div class="field">
+						<label class="label">Dojo Location</label>
+						<div class="control">
+							<div class="select">
+								<select id="dojo">
+									<option value=""></option>
+									<option value="San Jose">San Jose</option>
+									<option value="San fransico"> San Fransisco</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="field">
+						<label class="label">Favorite Language</label>
+						<div class="control">
+							<div class="select">
+								<select id="language">
+									<option value=""></option>
+									<option value="javascript">Javascript</option>
+									<option value="python">Python</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="field">
+						<label class="label">Message</label>
+						<div class="control">
+							<textarea class="textarea" id="message" placeholder="Textarea" value=""></textarea>
+						</div>
+					</div>
+					<div class="control">
+						<button type="submit" class="button is-link">Submit</button>
+					</div>
+				</form>
+			</div>
+
+		</div>
+
+	</div>
+</body>
+</html>

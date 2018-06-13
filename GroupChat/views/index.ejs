@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>SurveyIO</title>
+	<link rel="stylesheet" type="text/css" href="bulma-0.7.1/css/bulma.css"
+	 />
+	 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.dev.js"></script>
+
+    <script type="text/javascript">
+    	$(document).ready(function(){
+    		var socket = io('localhost:1337');
+    		var form = $('#myform');
+         	var fname = $('#name');
+            var form2 = $('#myforms')
+
+         form.submit(function(e) {
+            e.preventDefault();
+            socket.emit('posting_form', [fname.val()]);
+    		fname.val('');
+    		});
+
+         	socket.on('updated_message', function(data){
+         		var info = data;
+         		console.log(info.msg);
+             $(".chatbox").css("visibility", "visible")
+             $(".login").css("visibility", "hidden")
+             for(i= 0; i < data.msgs.length;i++){
+                $(".chatbox").append("<p>"+data.msgs[i]+"</p>");
+             }
+
+         	});
+            var chat = $('#chat');
+            form2.submit(function(e) {
+            e.preventDefault();
+            socket.emit('newChat', [chat.val()]);
+            chat.val('');
+            });
+
+            socket.on('updated_chat', function(data){
+                var info = data;
+                console.log(info);
+                $(".chatbox").append("<p>"+info.msg+"</p>");
+            });
+         
+         });
+
+
+    </script>
+</head>
+<body>
+	<div class="container">
+		<div class="hero">
+
+		</div>
+		<div class="columns">
+			<div class="column login">
+				<h1 class="title is-big">Survey Form</h1>
+				<form id="myform">
+					<div class="field">
+						<label class="label">Name</label>
+						<div class="control">
+							<input class="input" type="text" id="name" placeholder="Type name">
+						</div>
+					</div>
+					<div class="control">
+						<button type="submit" class="button is-link">Submit</button>
+					</div>
+				</form>
+               
+                <div class="chatbox" style='overflow: scroll; visibility: hidden;'>
+                    <div class='hero is-primary'><h1 class='title'>Conversation     Board</h1></div>
+                    <form id="myforms"><div class="field"><div class="control"><input class="input" type="text" id="chat" placeholder="Enter Message"></div></div><div class="control"><button class="button is-link">Submit</button></div></form>
+                </div>
+			 </div>
+
+		</div>
+
+	</div>
+</body>
+</html>
